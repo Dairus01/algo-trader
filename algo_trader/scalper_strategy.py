@@ -40,38 +40,44 @@ def prepare_scalper_features(df: pd.DataFrame, cfg: ScalperConfig) -> pd.DataFra
 
     # Strategy 1: one-minute momentum continuation.
     out["mom_long"] = (
-        out["session_ok"]
+        cfg.enable_momentum
+        & out["session_ok"]
         & (out["ema_fast"] > out["ema_slow"])
         & (out["ret_atr"] > cfg.momentum_return_atr)
-        & (out["rsi"] > 52)
+        & (out["rsi"] > cfg.momentum_rsi_long)
     )
     out["mom_short"] = (
-        out["session_ok"]
+        cfg.enable_momentum
+        & out["session_ok"]
         & (out["ema_fast"] < out["ema_slow"])
         & (out["ret_atr"] < -cfg.momentum_return_atr)
-        & (out["rsi"] < 48)
+        & (out["rsi"] < cfg.momentum_rsi_short)
     )
 
     # Strategy 2: short-horizon mean reversion.
     out["mr_long"] = (
-        out["session_ok"]
+        cfg.enable_mean_reversion
+        & out["session_ok"]
         & (out["zscore"] < -cfg.mean_reversion_z)
-        & (out["rsi"] < 42)
+        & (out["rsi"] < cfg.mean_reversion_rsi_low)
     )
     out["mr_short"] = (
-        out["session_ok"]
+        cfg.enable_mean_reversion
+        & out["session_ok"]
         & (out["zscore"] > cfg.mean_reversion_z)
-        & (out["rsi"] > 58)
+        & (out["rsi"] > cfg.mean_reversion_rsi_high)
     )
 
     # Strategy 3: micro-breakout.
     out["bo_long"] = (
-        out["session_ok"]
+        cfg.enable_breakout
+        & out["session_ok"]
         & (out["close"] > out["prev_high"])
         & (out["ema_fast"] >= out["ema_slow"])
     )
     out["bo_short"] = (
-        out["session_ok"]
+        cfg.enable_breakout
+        & out["session_ok"]
         & (out["close"] < out["prev_low"])
         & (out["ema_fast"] <= out["ema_slow"])
     )
