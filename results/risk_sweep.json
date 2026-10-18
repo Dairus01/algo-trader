@@ -1,18 +1,37 @@
 {
   "strategy": "fixed core breakout strategy",
   "starting_balance": 100.0,
-  "profiles": {
-    "1_pct": {"final_balance": 187.45, "return_pct": 87.45, "max_drawdown_pct": 13.57, "best_day_pct": 2.97},
-    "2_pct": {"final_balance": 668.10, "return_pct": 568.10, "max_drawdown_pct": 29.61, "best_day_pct": 10.66},
-    "3_pct": {"final_balance": 1900.87, "return_pct": 1800.87, "max_drawdown_pct": 40.99, "best_day_pct": 17.19},
-    "5_pct": {"final_balance": 9532.79, "return_pct": 9432.79, "max_drawdown_pct": 60.52, "best_day_pct": 30.93},
-    "8_pct": {"final_balance": 36460.34, "return_pct": 36360.34, "max_drawdown_pct": 78.83, "best_day_pct": 52.71},
-    "10_pct": {"final_balance": 66616.90, "return_pct": 66516.90, "max_drawdown_pct": 86.27, "best_day_pct": 67.37},
-    "12_pct": {"final_balance": 63392.51, "return_pct": 63292.51, "max_drawdown_pct": 91.67, "best_day_pct": 82.04},
-    "15_pct": {"final_balance": 30631.04, "return_pct": 30531.04, "max_drawdown_pct": 96.59, "best_day_pct": 88.34},
-    "20_pct": {"final_balance": 2.33, "return_pct": -97.67, "max_drawdown_pct": 98.59, "best_day_pct": 58.98},
-    "35_pct_moonshot": {"final_balance": 0.91, "return_pct": -99.09, "max_drawdown_pct": 99.37, "best_day_pct": 102.73},
-    "40_pct": {"final_balance": 0.84, "return_pct": -99.16, "max_drawdown_pct": 99.35, "best_day_pct": 117.95}
+  "ci_verified_profiles": {
+    "core_2_pct": {
+      "final_balance": 682.2933888095936,
+      "return_pct": 582.2933888095936,
+      "trades": 494,
+      "win_rate_pct": 40.688259109311744,
+      "profit_factor": 1.6645320643040293,
+      "max_balance_drawdown_pct": 29.022964990852163,
+      "best_day_pct": 10.641923371491657,
+      "worst_day_pct": -3.544629259976584
+    },
+    "aggressive_5_pct": {
+      "final_balance": 8081.785960731157,
+      "return_pct": 7981.785960731157,
+      "trades": 496,
+      "win_rate_pct": 40.524193548387096,
+      "profit_factor": 1.9689477182880064,
+      "max_balance_drawdown_pct": 59.88366805117198,
+      "best_day_pct": 30.923579051837425,
+      "worst_day_pct": -9.733479302372006
+    },
+    "moonshot_35_pct": {
+      "final_balance": 1.048700294872348,
+      "return_pct": -98.95129970512765,
+      "trades": 46,
+      "win_rate_pct": 30.434782608695652,
+      "profit_factor": 0.5357699458493891,
+      "max_balance_drawdown_pct": 98.95129970512765,
+      "best_day_pct": 103.37416909602064,
+      "worst_day_pct": -36.6547904837645
+    }
   },
-  "conclusion": "The historical threshold for a +100% day required roughly 35% risk per trade and caused near-total decade ruin. Moonshot mode is disabled by default."
+  "conclusion": "The committed trader is historically capable of a >100% day only in the 35% risk moonshot profile. That same profile lost about 99% over the decade. The 2% core profile is the default."
 }
