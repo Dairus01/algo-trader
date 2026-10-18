@@ -4,14 +4,16 @@
   "starting_balance": 100.0,
   "profile": "core",
   "risk_pct_per_trade": 2.0,
-  "final_balance": 668.10,
-  "return_pct": 568.10,
-  "trades": 492,
-  "win_rate_pct": 40.85,
-  "profit_factor": 1.642,
-  "max_balance_drawdown_pct": 29.61,
-  "best_day_pct": 10.66,
-  "worst_day_pct": -3.52,
+  "final_balance": 682.29,
+  "return_pct": 582.29,
+  "trades": 494,
+  "wins": 201,
+  "losses": 293,
+  "win_rate_pct": 40.69,
+  "profit_factor": 1.665,
+  "max_balance_drawdown_pct": 29.02,
+  "best_day_pct": 10.64,
+  "worst_day_pct": -3.54,
   "execution": {
     "spread_usd": 0.35,
     "slippage_usd_per_side": 0.05,
@@ -27,5 +29,6 @@
     "ema_filters": [50, 100, 200],
     "ema200_slope_lookback_hours": 72,
     "max_hold_hours": 72
-  }
+  },
+  "verification": "Reproduced by GitHub Actions using the committed Python implementation."
 }
