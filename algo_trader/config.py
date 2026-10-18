@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 
 @dataclass(frozen=True)
@@ -40,6 +40,12 @@ RISK_PROFILES = {
     "conservative": RiskProfile("conservative", 0.01, "Lower-risk research profile."),
     "core": RiskProfile("core", 0.02, "Default profile validated in the 10-year research."),
     "aggressive": RiskProfile("aggressive", 0.05, "High-drawdown research profile."),
+    "experimental100": RiskProfile(
+        "experimental100",
+        0.125,
+        "Extreme 9R research profile with a historical >100% day and very high drawdown.",
+        True,
+    ),
     "moonshot": RiskProfile(
         "moonshot",
         0.35,
@@ -54,3 +60,11 @@ def get_risk_profile(name: str) -> RiskProfile:
     if key not in RISK_PROFILES:
         raise ValueError(f"Unknown risk profile: {name}. Choose from {sorted(RISK_PROFILES)}")
     return RISK_PROFILES[key]
+
+
+def get_strategy_for_profile(name: str) -> StrategyConfig:
+    key = name.lower().strip()
+    base = StrategyConfig()
+    if key == "experimental100":
+        return replace(base, reward_r=9.0, breakout_lookback=12)
+    return base
