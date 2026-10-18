@@ -1,0 +1,11 @@
+{
+  "risk_pct_per_trade": 2.0,
+  "tests": [
+    {"spread_usd": 0.25, "slippage_usd_per_side": 0.02, "final_balance": 777.28, "profit_factor": 1.679, "max_drawdown_pct": 28.73},
+    {"spread_usd": 0.35, "slippage_usd_per_side": 0.05, "final_balance": 668.10, "profit_factor": 1.642, "max_drawdown_pct": 29.61},
+    {"spread_usd": 0.50, "slippage_usd_per_side": 0.08, "final_balance": 581.81, "profit_factor": 1.616, "max_drawdown_pct": 30.83},
+    {"spread_usd": 0.75, "slippage_usd_per_side": 0.10, "final_balance": 413.94, "profit_factor": 1.457, "max_drawdown_pct": 32.08},
+    {"spread_usd": 1.00, "slippage_usd_per_side": 0.15, "final_balance": 288.86, "profit_factor": 1.347, "max_drawdown_pct": 39.95},
+    {"spread_usd": 1.50, "slippage_usd_per_side": 0.20, "final_balance": 152.01, "profit_factor": 1.123, "max_drawdown_pct": 42.61}
+  ]
+}
