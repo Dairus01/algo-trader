@@ -1,0 +1,36 @@
+{
+  "profile": "experimental100",
+  "status": "extreme-risk research profile",
+  "selection_window": "2016-04-10 through 2026-04-10",
+  "starting_balance": 100,
+  "parameters": {
+    "risk_pct_per_trade": 12.5,
+    "reward_r": 9,
+    "breakout_lookback": 12,
+    "stop_atr": 3
+  },
+  "decade_backtest": {
+    "final_balance": 46472.060001876875,
+    "return_pct": 46372.060001876875,
+    "trades": 440,
+    "win_rate_pct": 39.77272727272727,
+    "profit_factor": 2.0429174410310873,
+    "max_balance_drawdown_pct": 94.19082571919311,
+    "best_day_pct": 110.45807979297706,
+    "worst_day_pct": -23.680546458021958
+  },
+  "post_selection_holdout": {
+    "window": "2026-04-11 through 2026-09-09",
+    "source_repo": "getdata-finance/xauusd-1h-ohlcv-metals-historical-data",
+    "source_commit": "0230e718fbeff0cf82f1cdf13991d46d8d88f98e",
+    "final_balance": 128.0422082662893,
+    "return_pct": 28.042208266289293,
+    "trades": 13,
+    "win_rate_pct": 38.46153846153846,
+    "profit_factor": 1.4712557059930167,
+    "max_balance_drawdown_pct": 46.673163397896296,
+    "best_day_pct": 47.872521963398974,
+    "worst_day_pct": -12.549880711029605
+  },
+  "caveat": "The profile produced a >100% day in historical selection data, not in the subsequent holdout. It is not evidence that 100% daily returns are repeatable."
+}
