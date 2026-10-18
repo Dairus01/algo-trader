@@ -1,0 +1,19 @@
+{
+  "method": "rolling 3-year train, next calendar year unseen test",
+  "risk_pct_per_trade": 2.0,
+  "first_test_year": 2019,
+  "last_test_year": 2025,
+  "starting_balance": 100.0,
+  "compounded_final_balance": 301.24,
+  "compounded_return_pct": 201.24,
+  "total_oos_trades": 310,
+  "yearly_oos": {
+    "2019": {"return_pct": -4.10, "profit_factor": 0.937, "trades": 62},
+    "2020": {"return_pct": 33.69, "profit_factor": 1.796, "trades": 42},
+    "2021": {"return_pct": -7.75, "profit_factor": 0.822, "trades": 40},
+    "2022": {"return_pct": 19.32, "profit_factor": 1.564, "trades": 42},
+    "2023": {"return_pct": 15.43, "profit_factor": 1.336, "trades": 50},
+    "2024": {"return_pct": 26.60, "profit_factor": 1.472, "trades": 54},
+    "2025": {"return_pct": 46.07, "profit_factor": 4.139, "trades": 20}
+  }
+}
