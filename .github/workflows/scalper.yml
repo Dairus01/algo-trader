@@ -4,8 +4,10 @@ on:
   push:
     paths:
       - "algo_trader/scalper_*.py"
+      - "algo_trader/passive_scalper_backtest.py"
       - "scripts/fetch_m1_sample.py"
       - "scripts/backtest_scalper_m1.py"
+      - "scripts/passive_scalper_sweep.py"
       - "scripts/live_scalper_mt5.py"
       - ".github/workflows/scalper.yml"
   workflow_dispatch:
@@ -22,9 +24,5 @@ jobs:
       - run: pip install -e .
       - name: Fetch pinned XAUUSD M1 sample
         run: python scripts/fetch_m1_sample.py
-      - name: Run $100 M1 scalper backtest
-        run: python scripts/backtest_scalper_m1.py
-      - name: Sweep high-frequency variants
-        run: python scripts/scalper_variant_sweep.py
       - name: Search passive limit scalpers
         run: python scripts/passive_scalper_sweep.py
