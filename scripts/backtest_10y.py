@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from algo_trader.backtest import compact_result, run_backtest
-from algo_trader.config import ExecutionConfig, StrategyConfig, get_risk_profile
+from algo_trader.config import ExecutionConfig, get_risk_profile, get_strategy_for_profile
 from algo_trader.data import fetch_pinned_research_data, load_ohlc
 
 
@@ -16,7 +16,7 @@ def main() -> None:
     parser.add_argument(
         "--profile",
         default="core",
-        choices=["conservative", "core", "aggressive", "moonshot"],
+        choices=["conservative", "core", "aggressive", "experimental100", "moonshot"],
     )
     parser.add_argument("--csv", default="data/XAUUSD_hourly.csv")
     args = parser.parse_args()
@@ -29,7 +29,7 @@ def main() -> None:
     profile = get_risk_profile(args.profile)
     result = run_backtest(
         df,
-        StrategyConfig(),
+        get_strategy_for_profile(profile.name),
         ExecutionConfig(),
         profile.risk_fraction,
         starting_balance=100.0,
