@@ -31,9 +31,15 @@ The default CORE profile risks 2% of equity per trade. In the research backtest,
 
 The rolling walk-forward test is more important. Parameters were selected only from the previous three years and then frozen for the next unseen year. The 2019-2025 out-of-sample sequence compounded $100 to about $301 across 310 trades.
 
-There is also a MOONSHOT research profile at 35% risk per trade. The committed engine produced a +103.37% best historical day in this profile, but the same 10-year simulation ended at $1.05 from $100, a -98.95% result. It is therefore disabled unless the operator explicitly acknowledges total-loss risk.
+There is also an `experimental100` research profile selected specifically to test whether a $100 account could ever exceed +100% in one historical day without finishing the decade below its starting balance. It risks 12.5% per trade and uses a 9R target.
 
-A strategy being mathematically capable of a +100% day is not the same as being capable of sustainably earning 100% per day.
+On the 2016-04-10 through 2026-04-10 research window it produced a best historical day of +110.46%, and $100 finished at $46,472.06. That apparent upside came with a 94.19% maximum balance drawdown, so it is an extreme-risk mode, not the default.
+
+Most importantly, the selected profile was then frozen and tested on a separate post-selection XAUUSD dataset from 2026-04-11 through 2026-09-09. In that unseen period it turned $100 into $128.04 across 13 trades, with PF 1.47, a 46.67% maximum balance drawdown, and a +47.87% best day. It remained profitable, but it did not reproduce a +100% day.
+
+The older `moonshot` stress profile risks 35% per trade. It produced a +103.37% historical day but ended the decade at only $1.05 from $100. It remains in the repository solely to quantify ruin risk.
+
+A strategy being mathematically capable of a +100% historical day is not the same as being capable of sustainably earning 100% per day.
 
 ## Research assumptions
 
@@ -58,13 +64,14 @@ The backtester allows all of these assumptions to be changed.
 | conservative | 1% | Low-risk research |
 | core | 2% | Default |
 | aggressive | 5% | High drawdown research |
-| moonshot | 35% | Can produce 100% days, historically near-total ruin |
+| experimental100 | 12.5% | 9R extreme profile; historical +110% best day, 94% balance drawdown |
+| moonshot | 35% | Stress-test profile; historical +100% day, near-total ruin |
 
-The live runner refuses to activate moonshot mode unless:
+The live runner refuses to activate either extreme-risk profile unless:
 
-ALLOW_MOONSHOT=I_ACCEPT_TOTAL_LOSS
+ALLOW_EXTREME_RISK=I_ACCEPT_TOTAL_LOSS
 
-is present in the environment.
+is present in the environment. The legacy `ALLOW_MOONSHOT` acknowledgement is also accepted for compatibility.
 
 ## Quick start
 
@@ -80,6 +87,14 @@ Run the exact 10-year backtest:
 
     python scripts/backtest_10y.py --profile core
 
+Run the extreme historical +100%-day profile:
+
+    python scripts/backtest_10y.py --profile experimental100
+
+Run the post-selection 2026 holdout:
+
+    python scripts/forward_holdout_2026.py
+
 Run the rolling walk-forward test:
 
     python scripts/walkforward_10y.py
@@ -87,6 +102,10 @@ Run the rolling walk-forward test:
 Run MT5 in paper mode:
 
     python scripts/live_mt5.py --profile core --paper
+
+For the extreme profile, acknowledge total-loss risk first and use paper mode before considering live execution:
+
+    ALLOW_EXTREME_RISK=I_ACCEPT_TOTAL_LOSS python scripts/live_mt5.py --profile experimental100 --paper
 
 Run MT5 live only after your own demo validation:
 
@@ -122,3 +141,18 @@ The raw dataset is not committed here. The fetch script downloads the pinned fil
 ## Disclaimer
 
 This is experimental trading software, not a promise of profit. Backtests can differ from live trading because of broker pricing, gaps, latency, swaps, execution quality, leverage and market-regime changes. The 35% moonshot profile is intentionally dangerous and is included to quantify, not hide, the tradeoff required to produce historical +100% days.
+
+
+## $100 account note
+
+The historical simulator uses a minimum size of 0.1 ounce, approximately 0.001 XAUUSD lot under a 100 oz/lot convention. A normal broker whose minimum is 0.01 lot may not allow the strategy to size a $100 account to its intended risk. The live runner reads the broker's actual minimum volume and volume step and refuses a trade when the requested risk cannot be represented. A cent or micro account is therefore much more appropriate for a $100 experiment.
+
+## Validation hierarchy
+
+The repository separates three levels of evidence:
+
+1. Fixed 10-year historical research on data through 2026-04-10.
+2. Rolling walk-forward testing in which each test year is unseen during parameter selection.
+3. A separate post-selection 2026 holdout from 2026-04-11 through 2026-09-09.
+
+The `experimental100` profile's +110.46% best day occurred only in the historical selection window. The subsequent holdout was profitable at +28.04% total, but its best day was +47.87%. There is no claim or guarantee that the strategy can double an account on demand.
