@@ -25,3 +25,5 @@ jobs:
         run: python scripts/risk_sweep_10y.py
       - name: Search lower-risk 100-percent-day candidates
         run: python scripts/moonshot_search.py
+      - name: Search high-reward lower-risk moonshots
+        run: python scripts/moonshot_lowrisk_search.py
