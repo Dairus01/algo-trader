@@ -10,27 +10,32 @@ class ScalperConfig:
     rsi_period: int = 7
     atr_period: int = 14
     z_window: int = 20
-    breakout_lookback: int = 4
+    breakout_lookback: int = 3
 
-    stop_atr: float = 0.70
-    reward_r: float = 1.35
-    max_hold_bars: int = 5
+    stop_atr: float = 1.20
+    reward_r: float = 1.80
+    max_hold_bars: int = 8
 
     session_start_utc: int = 6
     session_end_utc: int = 21
 
-    max_positions: int = 6
+    # Designed for pyramided micro-trades rather than one H1 position.
+    max_positions: int = 24
     max_new_positions_per_bar: int = 3
-
-    # Per-position risk. At 0.25% and 6 concurrent positions,
-    # instantaneous planned stop-risk is capped near 1.5% before costs.
     risk_fraction_per_trade: float = 0.0025
 
-    # Loose thresholds are intentional: this engine is designed for
-    # high trade frequency, then costs/edge decide whether the frequency is useful.
-    momentum_return_atr: float = 0.02
-    mean_reversion_z: float = 0.70
+    momentum_return_atr: float = 0.0
+    momentum_rsi_long: float = 50.0
+    momentum_rsi_short: float = 50.0
+
+    mean_reversion_z: float = 1.20
+    mean_reversion_rsi_low: float = 35.0
+    mean_reversion_rsi_high: float = 65.0
+
     min_atr_usd: float = 0.20
+    enable_momentum: bool = True
+    enable_mean_reversion: bool = True
+    enable_breakout: bool = True
 
 
 @dataclass(frozen=True)
