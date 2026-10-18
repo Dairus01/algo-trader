@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config import ExecutionConfig, StrategyConfig, get_risk_profile
+from .config import ExecutionConfig, get_risk_profile, get_strategy_for_profile
 from .indicators import floor_to_step
 from .strategy import prepare_features
 
@@ -95,16 +95,21 @@ def run_mt5(
 ) -> None:
     profile = get_risk_profile(profile_name)
     if profile.requires_total_loss_ack:
-        if os.getenv("ALLOW_MOONSHOT") != "I_ACCEPT_TOTAL_LOSS":
+        accepted = (
+            os.getenv("ALLOW_EXTREME_RISK") == "I_ACCEPT_TOTAL_LOSS"
+            or os.getenv("ALLOW_MOONSHOT") == "I_ACCEPT_TOTAL_LOSS"
+        )
+        if not accepted:
             raise RuntimeError(
-                "Moonshot is locked. Set ALLOW_MOONSHOT=I_ACCEPT_TOTAL_LOSS only if total loss is acceptable."
+                "Extreme-risk profile is locked. Set "
+                "ALLOW_EXTREME_RISK=I_ACCEPT_TOTAL_LOSS only if total loss is acceptable."
             )
 
     mt5 = _require_mt5()
     if not mt5.initialize():
         raise RuntimeError(f"MT5 initialize failed: {mt5.last_error()}")
 
-    strategy = StrategyConfig()
+    strategy = get_strategy_for_profile(profile.name)
     execution = ExecutionConfig()
     last_closed_bar = None
     day = None
