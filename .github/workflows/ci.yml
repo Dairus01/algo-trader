@@ -27,3 +27,5 @@ jobs:
         run: python scripts/moonshot_search.py
       - name: Search high-reward lower-risk moonshots
         run: python scripts/moonshot_lowrisk_search.py
+      - name: Validate post-selection 2026 holdout
+        run: python scripts/forward_holdout_2026.py
