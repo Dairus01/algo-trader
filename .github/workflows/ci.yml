@@ -21,3 +21,5 @@ jobs:
           python scripts/backtest_10y.py --profile core
           python scripts/backtest_10y.py --profile aggressive
           python scripts/backtest_10y.py --profile moonshot
+      - name: Sweep intermediate risk levels
+        run: python scripts/risk_sweep_10y.py
