@@ -1,0 +1,20 @@
+name: raw-g75-quick
+
+on:
+  push:
+    paths:
+      - "scripts/g75_raw_quick.py"
+      - ".github/workflows/raw-g75-quick.yml"
+  workflow_dispatch:
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python scripts/g75_raw_quick.py
