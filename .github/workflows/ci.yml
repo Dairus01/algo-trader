@@ -20,6 +20,7 @@ jobs:
           python scripts/fetch_research_data.py
           python scripts/backtest_10y.py --profile core
           python scripts/backtest_10y.py --profile aggressive
+          python scripts/backtest_10y.py --profile experimental100
           python scripts/backtest_10y.py --profile moonshot
       - name: Validate post-selection 2026 holdout
         run: python scripts/forward_holdout_2026.py
