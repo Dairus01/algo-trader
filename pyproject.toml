@@ -13,5 +13,8 @@ dependencies = ["numpy>=2.0", "pandas>=2.2", "requests>=2.32"]
 live = ["MetaTrader5>=5.0.45"]
 test = ["pytest>=8.0"]
 
+[tool.setuptools]
+packages = ["algo_trader"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
