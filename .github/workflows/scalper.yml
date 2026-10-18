@@ -1,0 +1,26 @@
+name: scalper-m1-validation
+
+on:
+  push:
+    paths:
+      - "algo_trader/scalper_*.py"
+      - "scripts/fetch_m1_sample.py"
+      - "scripts/backtest_scalper_m1.py"
+      - "scripts/live_scalper_mt5.py"
+      - ".github/workflows/scalper.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: pip install -e .
+      - name: Fetch pinned XAUUSD M1 sample
+        run: python scripts/fetch_m1_sample.py
+      - name: Run $100 M1 scalper backtest
+        run: python scripts/backtest_scalper_m1.py
