@@ -108,9 +108,13 @@ def pooled_matrix(frames: dict[str,pd.DataFrame], start, end, strong_only=True):
     return p,cols
 
 
-def simulate(frames, model, cols, start, end, threshold):
+def simulate(frames, model, cols, start, end, threshold, routes=None):
     trades=[]
+    routes = routes or {sym: 1 for sym in frames}
     for sid,(sym,df) in enumerate(frames.items()):
+        orientation = int(routes.get(sym, 1))
+        if orientation == 0:
+            continue
         z=df.loc[(df.index>=start)&(df.index<end)].copy()
         if z.empty: continue
         X=z[FEATURES].copy()
@@ -130,6 +134,7 @@ def simulate(frames, model, cols, start, end, threshold):
                 side=-1
             else:
                 continue
+            side *= orientation
 
             entry=float(z.entry_open.iloc[i])
             exit_px=float(z.future_close.iloc[i])
@@ -222,15 +227,72 @@ def main():
     )
     model.fit(train[cols],train.label)
 
-    validation=[simulate(frames,model,cols,train_end,valid_end,t) for t in THRESHOLDS]
-    eligible=[x for x in validation if x["avg_trades_per_hour"]>=13 and x["pf"]>1]
-    if eligible:
-        chosen=max(eligible,key=lambda x:(x["pf"],x["mean_r"]))
-    else:
-        # Do not fake a pass. Select best PF only so the untouched holdout quantifies failure.
-        chosen=max(validation,key=lambda x:x["pf"])
+    validation=[]
+    routed_validation=[]
 
-    holdout=simulate(frames,model,cols,valid_end,test_end,chosen["threshold"])
+    for threshold in THRESHOLDS:
+        normal = simulate(frames,model,cols,train_end,valid_end,threshold)
+        validation.append(normal)
+
+        routes={}
+        route_evidence={}
+        for sym in SYMBOLS:
+            one={sym:frames[sym]}
+            normal_sym=simulate(one,model,cols,train_end,valid_end,threshold,{sym:1})
+            inverse_sym=simulate(one,model,cols,train_end,valid_end,threshold,{sym:-1})
+
+            candidates=[
+                ("normal",1,normal_sym),
+                ("inverse",-1,inverse_sym),
+            ]
+            label,orientation,best=max(
+                candidates,
+                key=lambda x:(x[2]["pf"],x[2].get("mean_r",-999)),
+            )
+            # Only route symbols with positive validation expectancy.
+            if best["pf"]>1.02 and best.get("mean_r",0)>0 and best["trades"]>=20:
+                routes[sym]=orientation
+            else:
+                routes[sym]=0
+                label="disabled"
+
+            route_evidence[sym]={
+                "chosen":label,
+                "normal":normal_sym,
+                "inverse":inverse_sym,
+            }
+
+        aggregate=simulate(frames,model,cols,train_end,valid_end,threshold,routes)
+        aggregate["routes"]=routes
+        aggregate["route_evidence"]=route_evidence
+        routed_validation.append(aggregate)
+
+    eligible=[
+        x for x in routed_validation
+        if x["avg_trades_per_hour"]>=13
+        and x["pf"]>1.05
+        and x["final_balance"]>100
+    ]
+    if eligible:
+        chosen=max(
+            eligible,
+            key=lambda x:(x["pf"],x["mean_r"],x["avg_trades_per_hour"]),
+        )
+    else:
+        chosen=max(
+            routed_validation,
+            key=lambda x:(
+                x["pf"]>1,
+                x["avg_trades_per_hour"]>=13,
+                x["pf"],
+                x["avg_trades_per_hour"],
+            ),
+        )
+
+    holdout=simulate(
+        frames,model,cols,valid_end,test_end,
+        chosen["threshold"],chosen["routes"],
+    )
 
     payload={
         "data":"six synchronized public M1 mid-quote markets with explicit round-trip costs",
@@ -243,18 +305,19 @@ def main():
         },
         "training_rows":int(len(train)),
         "thresholds":THRESHOLDS,
-        "validation":validation,
+        "plain_validation":validation,
+        "routed_validation":routed_validation,
         "selection_passed_frequency_and_pf_gate":bool(eligible),
         "chosen_validation":chosen,
         "untouched_holdout":holdout,
         "acceptance_gate":{
             "avg_trades_per_hour_min":13.0,
-            "profit_factor_min_exclusive":1.0,
+            "profit_factor_min_exclusive":1.05,
             "positive_final_balance":True,
         },
         "holdout_pass":bool(
             holdout["avg_trades_per_hour"]>=13
-            and holdout["pf"]>1
+            and holdout["pf"]>1.05
             and holdout["final_balance"]>100
         ),
     }
