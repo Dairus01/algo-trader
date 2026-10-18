@@ -13,7 +13,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--profile",
         default="core",
-        choices=["conservative", "core", "aggressive", "moonshot"],
+        choices=["conservative", "core", "aggressive", "experimental100", "moonshot"],
     )
     parser.add_argument("--symbol", default="XAUUSD")
     mode = parser.add_mutually_exclusive_group()
