@@ -23,3 +23,5 @@ jobs:
           python scripts/backtest_10y.py --profile moonshot
       - name: Sweep intermediate risk levels
         run: python scripts/risk_sweep_10y.py
+      - name: Search lower-risk 100-percent-day candidates
+        run: python scripts/moonshot_search.py
