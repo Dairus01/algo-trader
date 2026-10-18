@@ -26,3 +26,5 @@ jobs:
         run: python scripts/backtest_scalper_m1.py
       - name: Sweep high-frequency variants
         run: python scripts/scalper_variant_sweep.py
+      - name: Search passive limit scalpers
+        run: python scripts/passive_scalper_sweep.py
