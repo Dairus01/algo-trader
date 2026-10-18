@@ -27,11 +27,11 @@ The strategy is deliberately simple and auditable:
 
 ## Important result
 
-The default CORE profile risks 2% of equity per trade. In the research backtest, with modeled spread, slippage and commission, $100 grew to about $668 over the full 10-year fixed-parameter test.
+The default CORE profile risks 2% of equity per trade. In the research backtest, with modeled spread, slippage and commission, the committed Python engine reproduced $100 growing to $682.29 over the full 10-year fixed-parameter test (494 trades, PF 1.665, 29.02% max balance drawdown).
 
 The rolling walk-forward test is more important. Parameters were selected only from the previous three years and then frozen for the next unseen year. The 2019-2025 out-of-sample sequence compounded $100 to about $301 across 310 trades.
 
-There is also a MOONSHOT research profile at 35% risk per trade. It historically produced individual days above +100%, but the same 10-year simulation lost about 99% of the account. It is therefore disabled unless the operator explicitly acknowledges total-loss risk.
+There is also a MOONSHOT research profile at 35% risk per trade. The committed engine produced a +103.37% best historical day in this profile, but the same 10-year simulation ended at $1.05 from $100, a -98.95% result. It is therefore disabled unless the operator explicitly acknowledges total-loss risk.
 
 A strategy being mathematically capable of a +100% day is not the same as being capable of sustainably earning 100% per day.
 
