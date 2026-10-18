@@ -269,27 +269,31 @@ class G75Raw:
         }
 
 
-def url_for(symbol: str, day: date, hour: int) -> str:
-    return f"{BASE}/{symbol}/{day.year}/{day.month - 1:02d}/{day.day:02d}/{hour:02d}h_ticks.bi5"
+def url_for(symbol: str, day: date, hour: int, mirror: bool = False) -> str:
+    root = "https://www.dukascopy.com/datafeed" if mirror else BASE
+    return f"{root}/{symbol}/{day.year}/{day.month - 1:02d}/{day.day:02d}/{hour:02d}h_ticks.bi5"
 
 
-def download_hour(symbol: str, day: date, hour: int, retries: int = 5) -> bytes:
-    url = url_for(symbol, day, hour)
+def download_hour(symbol: str, day: date, hour: int, retries: int = 8) -> bytes:
+    last_error = None
     for attempt in range(retries):
-        try:
-            req = Request(url, headers={"User-Agent": "DairusAlgoTrader/1.0", "Accept": "*/*"})
-            with urlopen(req, timeout=30) as response:
-                return response.read()
-        except HTTPError as exc:
-            if exc.code == 404:
-                return b""
-            if exc.code not in TRANSIENT or attempt == retries - 1:
-                raise
-        except (URLError, TimeoutError, ConnectionError):
-            if attempt == retries - 1:
-                raise
-        time.sleep(min(10.0, 1.0 * 2 ** attempt))
-    return b""
+        for mirror in (False, True):
+            url = url_for(symbol, day, hour, mirror=mirror)
+            try:
+                req = Request(url, headers={"User-Agent": "DairusAlgoTrader/1.1", "Accept": "*/*"})
+                with urlopen(req, timeout=40) as response:
+                    body = response.read()
+                return body
+            except HTTPError as exc:
+                if exc.code == 404:
+                    return b""
+                last_error = exc
+                if exc.code not in TRANSIENT:
+                    raise
+            except (URLError, TimeoutError, ConnectionError) as exc:
+                last_error = exc
+        time.sleep(min(30.0, 1.5 * 2 ** attempt))
+    raise RuntimeError(f"Dukascopy download failed after retries: {symbol} {day} {hour}: {last_error}")
 
 
 def parse_hour(symbol: str, day: date, hour: int, body: bytes):
