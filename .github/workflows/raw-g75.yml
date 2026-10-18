@@ -4,16 +4,12 @@ on:
   push:
     paths:
       - "scripts/g75_raw_duka_bt.py"
+      - "scripts/g75_raw_grid.py"
       - ".github/workflows/raw-g75.yml"
   workflow_dispatch:
 
 jobs:
   replay:
-    strategy:
-      fail-fast: false
-      matrix:
-        tf_sec: [15, 30, 60]
-        variant: [A, B, C]
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -22,14 +18,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - name: Raw Dukascopy train replay
-        run: |
-          python scripts/g75_raw_duka_bt.py \
-            --start 2026-07-27 --days 7 \
-            --tf-sec ${{ matrix.tf_sec }} \
-            --variant ${{ matrix.variant }} \
-            --out results/g75_raw/train_${{ matrix.tf_sec }}_${{ matrix.variant }}.json
+      - name: Replay all G75 variants on one raw tick stream
+        run: python scripts/g75_raw_grid.py
       - uses: actions/upload-artifact@v4
         with:
-          name: g75-train-${{ matrix.tf_sec }}-${{ matrix.variant }}
-          path: results/g75_raw/*.json
+          name: g75-raw-grid
+          path: results/g75_raw_grid.json
