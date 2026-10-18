@@ -15,7 +15,9 @@ jobs:
       - run: pip install -r requirements.txt
       - run: pip install -e .
       - run: pytest -q
-      - name: Reproduce pinned 10-year core backtest
+      - name: Reproduce pinned 10-year risk profiles
         run: |
           python scripts/fetch_research_data.py
           python scripts/backtest_10y.py --profile core
+          python scripts/backtest_10y.py --profile aggressive
+          python scripts/backtest_10y.py --profile moonshot
